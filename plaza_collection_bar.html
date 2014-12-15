@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3 Test</title>
+	<style type="text/css">
+		div.chart{
+			font-family:sans-serif;
+			font-size:0.7em;
+			min-width: 1024px;
+		}
+		div.line {
+			clear: both;
+			padding: 5px;
+		}
+		div.barContainer {
+			display: inline-block;
+			margin-left: 5px;
+		}
+		div.bar {
+			display: block;
+			background-color:DarkRed;
+			color:white;
+			height:3em;
+			line-height:3em;
+			padding-right:1em;
+			text-align:right;
+		}
+
+		div.bar1 {
+			display: block;
+			background-color:DarkBlue;
+			color:white;
+			height:3em;
+			line-height:3em;
+			padding-right:1em;
+			text-align:right;
+		}
+
+		div.label {
+			background-color: lightYellow;
+			color: black;
+			font-size:1.2em;
+			display: inline-block;
+			max-width: 150px;
+			min-width: 150px;
+			height: 100%;
+		}
+	</style>
+	<script src="jquery.min.js"> </script>
+	<script src="./d3/d3.min.js"> </script>
+	<script>
+		var d=0;
+		var n = 0;
+		"use strict";
+		function draw(sData) {
+			"use strict";
+			console.log("In")
+			//Create placeholder li if does not exist and set the data.
+
+			d3.select("body")
+			.selectAll("div.chart")
+			.data([1])
+			.enter()
+			.append("div")
+			.classed("chart",true)
+
+			var elements = d3.select("div.chart")
+			.selectAll("div.line")
+			.data(sData.cash)
+			var newElements = elements.enter().append("div").classed("line",true);
+
+			// Remove the delete li elements
+			elements.exit().remove();
+			
+			newElements.append("div").classed("label",true);
+			var barContainers = newElements.append("div").classed("barContainer",true)
+			barContainers.append("div")
+				.classed("bar",true);
+			barContainers.append("div")
+				.classed("bar1",true);
+
+			d3.selectAll("div.label").data(sData.cash)
+			.text(function(d) {
+				return d.name;
+			})
+
+			d3.selectAll("div.bar").data(sData.cash)
+			.transition()
+			.duration(1000)
+		 	.style("width", function (d) {
+				return Math.round(d.count)/200 + "px";
+			}).text(function(d) {
+				return Math.round(d.count);
+			});
+
+			d3.selectAll("div.bar1").data(sData.electronic)
+			.transition()
+			.duration(1000)
+		 	.style("width", function (d) {
+				return Math.round(d.count)/160 + "px";
+			}).text(function(d) {
+				return Math.round(d.count);
+			});
+		}
+		$(function() {			
+			console.log("Page load completed");
+			d3.json("plaza_traffic.json", draw);
+		});
+	</script>
+</head>
+<body>
+	<!-- <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="300" width = "300">
+		
+</svg> -->
+</body>
+
+</html>

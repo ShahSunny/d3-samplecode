@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3 Test</title>
+	<script src="jquery.min.js"> </script>
+	<script src="./d3/d3.min.js"> </script>
+	<script>
+		"use strict";
+		function draw(sData) {
+			"use strict";
+			console.log("In")
+			//Create placeholder li if does not exist and set the data.
+			var elements = d3.select("#sul")
+			.selectAll("li")
+			.data(sData)			
+			
+			elements.enter()
+			.append("li") // Create the li elements which does not exist
+
+			// Remove the delete li elements
+			elements.exit()
+			.remove();
+			
+			elements = d3.select("#sul")
+			.selectAll("li")
+			.data(sData)
+			.text(function(d) {
+				return d.name + " : " + d.status;
+			}).style("font-weight", function (d) {
+				if (d.status == "GOOD SERVICE"){
+						return "normal";
+					} else {
+						return "bold";
+					}
+			});
+		}		
+		$(function() {			
+			console.log("Page load completed");
+			d3.json("plaza_traffic.json", draw);
+		});
+	</script>
+</head>
+<body>
+	<ul id="sul">
+	    
+	</ul>
+	<!-- <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" height="300" width = "300">
+		
+</svg> -->
+</body>
+
+</html>

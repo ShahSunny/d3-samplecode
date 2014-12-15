@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>D3 Test</title>
+	<style type="text/css">
+		#bus_perf{
+			border-style: solid;
+		}
+		.axis path{
+			fill:none;
+			stroke: black;
+		}
+		.axis{
+			font-size:8pt;
+			font-family:sans-serif;
+		}
+		
+		.tick line{
+			fill:none;
+			stroke:black;
+		}
+
+		circle{
+			stroke:black;
+			stroke-width:0.5px;
+			fill:RoyalBlue;
+			opacity:0.6;
+		}
+	</style>
+	<script src="jquery.min.js"> </script>
+	<script src="./d3/d3.min.js"> </script>
+	<script>
+		var d=0;
+		var n = 0;
+		var width = 700;
+		var height = 300;
+		var margin = 50;
+		var xScale = 0;
+		var yScale = 0;
+		var xExtent =0,yExtent = 0;
+		"use strict";
+		function draw(data) {
+			"use strict";
+			console.log("In")
+			d = data;
+
+			//Create svg element
+			d3.select("body")
+				.selectAll("#bus_perf")
+				.data([1])
+				.enter()
+				.append("svg")
+				.attr('width', width)
+				.attr('height', height)
+				.attr('id', 'bus_perf');
+			
+			xExtent = d3.extent(data, function(d){return d.collision_with_injury});
+			yExtent = d3.extent(data,function(d) {return d.dist_between_fail;});
+
+			xScale = d3.scale.linear().range([margin,width-margin]).domain(xExtent);
+			yScale = d3.scale.linear().range([height-margin ,margin]).domain(yExtent);
+			d3.select("#bus_perf")
+				.selectAll(".dataPoints")
+				.data(data)
+				.enter()
+				.append("circle")
+				.attr('class', "dataPoints")
+				.attr('r', 5)
+
+			d3.select("#bus_perf")
+				.selectAll(".dataPoints")
+				.attr('cx', function(d) { return xScale(d.collision_with_injury)})
+				.attr('cy', function(d) { return yScale(d.dist_between_fail)});
+
+			var xAxis = d3.svg.axis().scale(xScale);
+			var yAxis = d3.svg.axis().scale(yScale).orient("left");;
+
+			d3.select("#bus_perf")
+				.selectAll("g.x")
+				.data([1])
+				.enter()
+				.append("g")
+				.attr("class", "x axis")
+
+			d3.select("#bus_perf")
+				.selectAll("g.x")
+				.attr("transform", "translate(0," + (height-margin) + ")")
+				.call(xAxis);
+
+
+			d3.select("#bus_perf")
+				.selectAll("g.y")
+				.data([1])
+				.enter()
+				.append("g")
+				.attr("class", "y axis")
+
+
+			d3.select("#bus_perf")
+				.selectAll("g.y")
+				.attr("transform", "translate("+margin + ",0)")
+				.call(yAxis);
+
+			d3.select(".x")
+				.selectAll(".label")
+				.data([1])
+				.enter()
+				.append("text")
+				.attr('class', 'label');
+
+			d3.select(".x")
+				.selectAll(".label")
+				.text("collisions with injury (per million miles)")
+				.attr("x", (width / 2) - margin)
+				.attr("y", margin / 1.5);
+
+			d3.select(".y.axis")
+				.append("text")
+				.text("mean distance between failure (miles)")
+				.attr("transform", "rotate (-90, -43, 0) translate(-280)");			
+
+		}
+
+		$(function() {
+			console.log("Page load completed");
+			d3.json("bus_perf.json", draw);
+		});
+		
+	</script>
+</head>
+<body>
+
+	</body>
+
+</html>
